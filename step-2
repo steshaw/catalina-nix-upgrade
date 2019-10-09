@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Create Nix volume.
+if diskutil info Nix >/dev/null; then
+  echo Nix volume already created
+else
+  sudo diskutil apfs addVolume disk1 APFSX Nix -mountpoint /nix
+  sudo diskutil enableOwnership /nix
+  sudo echo 'LABEL=Nix /nix apfs rw' | sudo tee -a /etc/fstab >/dev/null
+  sudo chflags hidden /nix
+fi
+
+# Restore /nix/store and /nix/var from Relocated Items.
+relocated='/Users/Shared/Relocated Items/Security/nix'
+if [[ -d ${relocated} && -d /nix ]]; then
+  if [[ -d ${relocated}/store ]]; then
+    sudo mv "${relocated}/store" /nix/
+  fi
+  if [[ -d ${relocated}/var ]]; then
+    sudo mv "${relocated}/var" /nix/
+  fi
+  sudo rmdir "${relocated}"
+fi

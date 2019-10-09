@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -euo pipefail
+
+syn=/etc/synthetic.conf
+if [[ -f ${syn} ]] && grep -q '^nix$' ${syn}; then
+  echo 'If you already have a synthetic /nix, run step-2'
+else
+  echo "Adding nix to ${syn}"
+  echo nix | sudo tee -a ${syn} >/dev/null
+  echo 'Reboot and run step-2'
+fi
