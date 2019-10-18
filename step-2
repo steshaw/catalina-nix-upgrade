@@ -10,6 +10,7 @@ else
   sudo diskutil enableOwnership /nix
   sudo echo 'LABEL=Nix /nix apfs rw' | sudo tee -a /etc/fstab >/dev/null
   sudo chflags hidden /nix
+  sudo mdutil -i off /nix # Turn Spotlight indexing off.
 fi
 
 # Restore /nix/store and /nix/var from Relocated Items.
