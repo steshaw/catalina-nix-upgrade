@@ -8,7 +8,9 @@ if diskutil info Nix >/dev/null; then
 else
   sudo diskutil apfs addVolume disk1 APFSX Nix -mountpoint /nix
   sudo diskutil enableOwnership /nix
-  sudo echo 'LABEL=Nix /nix apfs rw' | sudo tee -a /etc/fstab >/dev/null
+  # shellcheck disable=SC2016
+  printf '$a\nLABEL=Nix /nix apfs rw\n.\nwq\n' |
+    EDITOR='ed' sudo vifs >/dev/null
   sudo chflags hidden /nix
   sudo mdutil -i off /nix # Turn Spotlight indexing off.
 fi
